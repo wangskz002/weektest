@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bw.mapper.GoodsMapper">
+	<select id="list" parameterType="map" resultType="com.bw.entity.Goods">
+		SELECT g.id,g.name,b.bname,t.tname,g.datea FROM goods g LEFT JOIN `types` t ON g.tid = t.tid LEFT JOIN brand b ON b.bid = g.bid where g.status = 0
+		<if test="name != null and name != ''">
+			and name like '%${name}%'
+		</if>
+	</select>
+	<select id="getBrand" resultType="com.bw.entity.Brand">
+		select * from brand
+	</select>
+	
+	<select id="getType" resultType="com.bw.entity.Types">
+		select * from types
+	</select>
+	
+	<insert id="add" parameterType="com.bw.entity.Goods">
+		insert goods(name,datea,tid,price,bid) values(#{name},#{datea},#{tid},#{price},#{bid})
+	</insert>
+	
+	<select id="reshow" parameterType="int" resultType="com.bw.entity.Goods">
+		SELECT g.id,g.tid,g.bid,g.name,b.bname,t.tname,g.datea,g.price FROM goods g LEFT JOIN `types` t ON g.tid = t.tid LEFT JOIN brand b ON b.bid = g.bid where g.id = #{0}
+	</select>
+	
+	<update id="update" parameterType="com.bw.entity.Goods">
+		update goods set name = #{name},datea = #{datea},tid = #{tid},price = #{price},bid = #{bid} where id  = #{id}
+	</update>
+	
+	<update id="updatestatus" parameterType="string">
+		UPDATE goods SET `status` = 1 WHERE id IN(${_parameter})
+	</update>
+</mapper>
